@@ -1,4 +1,6 @@
+import { v4 } from "uuid";
 import {
+  SORT_ORDER,
   ADD_CARD,
   ADD_LIST,
   UPDATE_CARD,
@@ -10,54 +12,54 @@ import {
 const init = [
   {
     title: "test tile",
-    id: 0,
+    id: v4(),
     cards: [
       {
-        id: 0,
+        id: v4(),
         text: "lorem lorem lorem yeah",
       },
       {
-        id: 1,
+        id: v4(),
         text: " yeah lorem yellow lorem",
       },
     ],
   },
   {
     title: "second episode",
-    id: 1,
+    id: v4(),
     cards: [
       {
-        id: 0,
+        id: v4(),
         text: "bananas !!",
       },
       {
-        id: 1,
+        id: v4(),
         text: " aka boom ba",
       },
       {
-        id: 2,
+        id: v4(),
         text: "shave your hairs",
       },
       {
-        id: 3,
+        id: v4(),
         text: "shave your hairs",
       },
     ],
   },
   {
     title: "third episode",
-    id: 3,
+    id: v4(),
     cards: [
       {
-        id: 0,
+        id: v4(),
         text: "car racer",
       },
       {
-        id: 1,
+        id: v4(),
         text: "on stick",
       },
       {
-        id: 2,
+        id: v4(),
         text: "smart",
       },
     ],
@@ -66,6 +68,41 @@ const init = [
 
 export default (state = init, action) => {
   switch (action.type) {
+    //DND
+    case SORT_ORDER:
+      const {
+        droppableIdStart,
+        droppableIdEnd,
+        droppableIndexStart,
+        droppableIndexEnd,
+        draggableId,
+        type,
+      } = action.payload;
+
+      if (type === "list") {
+        const list = state.splice(droppableIndexStart, 1)[0];
+        state.splice(droppableIndexEnd, 0, list);
+        return [...state];
+      }
+      if (droppableIdStart === droppableIdEnd) {
+        //in the same list
+        const list = state.find((list) => list.id === droppableIdStart);
+        const card = list.cards.splice(droppableIndexStart, 1)[0];
+        list.cards.splice(droppableIndexEnd, 0, card);
+
+        return [...state];
+      } else {
+        //in different list
+        const card = state
+          .find((list) => list.id === droppableIdStart)
+          .cards.splice(droppableIndexStart, 1)[0];
+
+        const list = state.find((list) => list.id === droppableIdEnd);
+        list.cards.splice(droppableIndexEnd, 0, card);
+
+        return [...state];
+      }
+
     //CREATE
     case ADD_CARD:
       return [
@@ -90,7 +127,7 @@ export default (state = init, action) => {
         ...state,
         {
           title: action.payload,
-          id: Math.floor(Math.random() * 100),
+          id: v4(),
           cards: [],
         },
       ];

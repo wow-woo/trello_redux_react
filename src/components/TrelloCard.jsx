@@ -8,19 +8,15 @@ const TrelloCard = ({ card, list, deleteCard }) => {
     deleteCard(list, card.id);
   };
   return (
-    <Card style={styles.cardContainer}>
-      <Icon onMouseDown={deleteHandler}>close</Icon>
+    <Card>
       <CardContent>
-        <Typography gutterBottom>{card.text}</Typography>
+        <Typography gutterBottom style={{ fontSize: "13px" }}>
+          {card.text}
+          {/* <Icon onMouseDown={deleteHandler}>close</Icon> */}
+        </Typography>
       </CardContent>
     </Card>
   );
-};
-
-const styles = {
-  cardContainer: {
-    marginBottom: 8,
-  },
 };
 
 export default connect(null, { deleteCard })(TrelloCard);

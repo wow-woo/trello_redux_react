@@ -1,9 +1,21 @@
 import React, { useState, useRef } from "react";
 import { Icon, Card, Button } from "@material-ui/core";
-import { addCard, addList } from "../store/actions/listAction";
+import {
+  addCard,
+  addList,
+  updateCard,
+  updateList,
+} from "../store/actions/listAction";
 import { connect } from "react-redux";
 
-const ActionButton = ({ add, addCard, addList, ...props }) => {
+const ActionButton = ({
+  add,
+  addCard,
+  addList,
+  updateCard,
+  updateList,
+  ...props
+}) => {
   const [open, setOpen] = useState(false);
   const textArea = useRef("");
 
@@ -23,13 +35,10 @@ const ActionButton = ({ add, addCard, addList, ...props }) => {
       marginRight: 5,
       fontSize: 11,
     },
-    form: {
-      cursor: "pointer",
-    },
     card: {
+      maxWidth: "200px",
       padding: 15,
       minHeight: 85,
-      minWidth: 272,
     },
     textarea: {
       resize: "none",
@@ -38,9 +47,10 @@ const ActionButton = ({ add, addCard, addList, ...props }) => {
       outline: "none",
       overflowY: "hidden",
       fontSize: 15,
+      transition: "height .5s ease-in",
     },
     container: {
-      minWidth: !add && "300px",
+      minWidth: !add && "200px",
       display: "flex",
       alignItems: "center",
       cursor: "pointer",
@@ -56,16 +66,24 @@ const ActionButton = ({ add, addCard, addList, ...props }) => {
   const handleClick = (e) => {
     if (add) {
       addCard(props.list, textArea.current.value);
-      textArea.current.value = 0;
+      textArea.current.value = "";
     } else {
       addList(textArea.current.value);
-      textArea.current.value = 0;
+      textArea.current.value = "";
+    }
+  };
+
+  const updateHandler = (e) => {
+    if (add) {
+      updateCard(props.list, textArea.current.value);
+    } else {
+      updateList(textArea.current.value);
     }
   };
 
   return open ? (
     <div>
-      <Card style={styles.card}>
+      <Card style={styles.card} onMouseDown={updateHandler}>
         <textarea
           autoFocus
           onBlur={() => setOpen(false)}
@@ -75,6 +93,7 @@ const ActionButton = ({ add, addCard, addList, ...props }) => {
           ref={textArea}
           onChange={(e) => {
             let overflowed = e.target.scrollTop;
+
             if (overflowed !== 0) {
               let cal = e.target.scrollHeight;
               e.target.style.height = cal + "px";
@@ -107,4 +126,6 @@ const ActionButton = ({ add, addCard, addList, ...props }) => {
   );
 };
 
-export default connect(null, { addCard, addList })(ActionButton);
+export default connect(null, { addCard, addList, updateCard, updateList })(
+  ActionButton
+);

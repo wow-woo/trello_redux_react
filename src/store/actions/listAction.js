@@ -1,4 +1,5 @@
 import {
+  SORT_ORDER,
   ADD_CARD,
   ADD_LIST,
   UPDATE_CARD,
@@ -7,6 +8,12 @@ import {
   DELETE_LIST,
 } from "../type.js";
 
+export const sortDND = (dnd) => (dispatch) => {
+  return dispatch({
+    type: SORT_ORDER,
+    payload: dnd,
+  });
+};
 export const addCard = (list_id, content) => (dispatch) => {
   return dispatch({
     type: ADD_CARD,

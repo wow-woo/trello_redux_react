@@ -1,40 +1,28 @@
 import React from "react";
-import TrelloList from "./components/TrelloList";
-import { connect } from "react-redux";
-import listReducer from "./store/reducers/listReducer";
-import ActionButton from "./components/ActionButton";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import styled from "styled-components";
+import Home from "./components/pages/Home.jsx";
+import NavBar from "./components/layout/NavBar";
 
-function App({ lists }) {
+const AppContainer = styled.div`
+  background-color: rgba(2, 2, 2, 0.7);
+  height: 100%;
+  padding: 2% 0 15% 2%;
+`;
+
+function App() {
   return (
-    <div className="App">
-      <h1>app</h1>
-      <div>{JSON.stringify(lists)}</div>
-      <div className="grid" style={styles.grid}>
-        {lists.map((list) => {
-          return <TrelloList key={list.id} list={list} />;
-        })}
-        <ActionButton add={false} style={styles.add} />
-      </div>
-    </div>
+    <AppContainer>
+      <Router>
+        <header>
+          <NavBar />
+        </header>
+        <Switch>
+          <Route path="/" component={Home} />
+        </Switch>
+      </Router>
+    </AppContainer>
   );
 }
 
-const styles = {
-  grid: {
-    // display: "grid",
-    // gridTemplateColumns: "repeat(auto-fill , minmax( 220px , 320px))",
-    // justifyContent: "start",
-    // gridGap: "5px",
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-  },
-};
-
-const mapStateToProp = (state) => ({
-  lists: state.lists,
-});
-
-export default connect(mapStateToProp, { listReducer })(App);
+export default App;
