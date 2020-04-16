@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import TrelloList from "./components/TrelloList";
+import { connect } from "react-redux";
+import listReducer from "./store/reducers/listReducer";
+import ActionButton from "./components/ActionButton";
 
-function App() {
+function App({ lists }) {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>app</h1>
+      <div>{JSON.stringify(lists)}</div>
+      <div className="grid" style={styles.grid}>
+        {lists.map((list) => {
+          return <TrelloList key={list.id} list={list} />;
+        })}
+        <ActionButton add={false} style={styles.add} />
+      </div>
     </div>
   );
 }
 
-export default App;
+const styles = {
+  grid: {
+    // display: "grid",
+    // gridTemplateColumns: "repeat(auto-fill , minmax( 220px , 320px))",
+    // justifyContent: "start",
+    // gridGap: "5px",
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+};
+
+const mapStateToProp = (state) => ({
+  lists: state.lists,
+});
+
+export default connect(mapStateToProp, { listReducer })(App);
